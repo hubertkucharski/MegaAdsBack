@@ -1,7 +1,8 @@
 import express, {json} from 'express';
 import cors from 'cors';
 import 'express-async-errors';
-import {handleError, ValidationError} from "./utils/errors";
+import {handleError} from "./utils/errors";
+import {AdRecord} from "./records/ad.record";
 // import('./utils/db');
 
 const app = express();
@@ -19,7 +20,7 @@ app.use((req, res, next) => {
 // app.get('/', async (req, res) => {
 //     throw new ValidationError('Hola hola!')
 // })
-
+AdRecord.getOne('jdfaskl')
 
 app.use(handleError)
 
