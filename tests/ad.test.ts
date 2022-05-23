@@ -22,3 +22,23 @@ test('AdRecord return null from database if not exist', async ()=>{
 
     expect(ad).toBeNull();
 })
+test('AdRecord return list of records from database', async ()=>{
+
+
+    expect(await AdRecord.listAll()).toBeDefined()
+    expect(await AdRecord.listAll()).toBeInstanceOf(Array)
+})
+test('AdRecord insert new element to database.', async ()=>{
+
+    const ad = await new AdRecord({
+        id: undefined,
+        name: 'John',
+        description: 'opisany john',
+        price: 199,
+        url: 'http://localhost:8080',
+        lat: 16.44,
+        lon: 33.11,
+    })
+    expect(await ad.insert()).toBe(ad.id);
+
+})
