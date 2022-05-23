@@ -2,7 +2,7 @@ import express, {json} from 'express';
 import cors from 'cors';
 import 'express-async-errors';
 import {handleError} from "./utils/errors";
-import {AdRecord} from "./records/ad.record";
+import rateLimit from "express-rate-limit";
 // import('./utils/db');
 
 const app = express();
@@ -11,6 +11,10 @@ app.use(cors({
     origin: 'http://localhost:3000',
 }));
 app.use(json());
+app.use(rateLimit({
+    windowMs: 5 * 60 * 1000,
+    max: 100,
+}))
 
 app.use((req, res, next) => {
     console.log('time: ', new Date().toLocaleTimeString() )
@@ -20,7 +24,6 @@ app.use((req, res, next) => {
 // app.get('/', async (req, res) => {
 //     throw new ValidationError('Hola hola!')
 // })
-AdRecord.getOne('jdfaskl')
 
 app.use(handleError)
 
