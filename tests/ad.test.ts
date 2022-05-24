@@ -1,13 +1,9 @@
-// import {AdRecord} from "../records/ad.record";
-//
-// let ad: AdRecord;
-
-// beforeAll(async ()=>{
-//     ad = new AdRecord()
-// })
-//
-
 import {AdRecord} from "../records/ad.record";
+import {pool} from "../utils/db";
+
+afterAll(async ()=>{
+    await pool.end()
+})
 
 test('AdRecord returns data from database for one entry', async ()=>{
 
@@ -18,16 +14,19 @@ test('AdRecord returns data from database for one entry', async ()=>{
 })
 test('AdRecord return null from database if not exist', async ()=>{
 
-    const ad = await AdRecord.getOne('xxxxx-d619-11ec-9f07-3ecfab8190d4');
+    const ad = await AdRecord.getOne('cda499fb-d619-11ec-9f07-3ecfab8190d4');
 
-    expect(ad).toBeNull();
+    expect(ad).toBeDefined();
+    expect(ad.name).toEqual('Testowy');
 })
-test('AdRecord return list of records from database', async ()=>{
 
-
-    expect(await AdRecord.listAll()).toBeDefined()
-    expect(await AdRecord.listAll()).toBeInstanceOf(Array)
+test('AdRecord.findAll returns array of found entries when searching for "a". return only small data.', async ()=>{
+    const ad = await AdRecord.findAll('o');
+    expect(ad).not.toEqual([]);
+    expect(ad[0].id).toBeDefined();
+    expect((ad[0] as AdRecord).description).toBeUndefined()
 })
+
 test('AdRecord insert new element to database.', async ()=>{
 
     const ad = await new AdRecord({
@@ -39,6 +38,6 @@ test('AdRecord insert new element to database.', async ()=>{
         lat: 16.44,
         lon: 33.11,
     })
-    expect(await ad.insert()).toBe(ad.id);
+    // expect(await ad.insert()).toBe(ad.id);
 
 })

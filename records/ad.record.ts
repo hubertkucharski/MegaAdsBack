@@ -1,4 +1,4 @@
-import {AdEntity, NewAdEntity} from "../types";
+import {AdEntity, NewAdEntity, SimpleAdEntity} from "../types";
 import {ValidationError} from "../utils/errors";
 import {pool} from "../utils/db";
 import {FieldPacket} from "mysql2";
@@ -49,9 +49,18 @@ export class AdRecord implements AdEntity {
                 }) as AdRecordResults;
         return results.length === 0 ? null : new AdRecord(results[0])
     }
-    static async listAll(): Promise<AdRecord[]> {
-        const [results] = await pool.execute('select * from `ads`') as AdRecordResults;
-        return results.map((obj) => new AdRecord(obj));
+    // static async listAll(): Promise<AdRecord[]> {
+    //     const [results] = await pool.execute('select * from `ads`') as AdRecordResults;
+    //     return results.map((obj) => new AdRecord(obj));
+    // }
+    //powyżej zbędne pod dodaniu funkcji findAll z wyszukaniem LIKE
+    static async findAll(name: string): Promise<SimpleAdEntity[]>{
+        const [results] = await pool.execute('select * from `ads` where `name` like :search', { search: `%${name }%`,}) as AdRecordResults;
+
+        return results.map(result => {
+            const {id, lat, lon} = result;
+            return { id, lat, lon };
+        })
     }
     async insert() {
         (!this.id) ? this.id = uuid() : this.id;
