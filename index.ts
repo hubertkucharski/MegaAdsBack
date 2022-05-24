@@ -3,6 +3,7 @@ import cors from 'cors';
 import 'express-async-errors';
 import {handleError} from "./utils/errors";
 import rateLimit from "express-rate-limit";
+import {AdRouter} from "./routers/ad.router";
 // import('./utils/db');
 
 const app = express();
@@ -21,9 +22,7 @@ app.use((req, res, next) => {
     next()
 })
 
-// app.get('/', async (req, res) => {
-//     throw new ValidationError('Hola hola!')
-// })
+app.use('/ad', AdRouter);
 
 app.use(handleError)
 
