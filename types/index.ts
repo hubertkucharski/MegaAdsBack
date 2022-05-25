@@ -1,1 +1,1 @@
-export * from './TestInter'
+export * from './ad'
