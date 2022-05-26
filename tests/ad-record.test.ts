@@ -8,6 +8,7 @@ const defaultObj = {
     price: 0,
     lat: 4,
     lon: 4,
+    clicksCounter: 0,
 }
 
 test('Can build AdRecord', ()=>{
@@ -17,7 +18,6 @@ test('Can build AdRecord', ()=>{
         }
     );
     expect(ad.name).toBe('test name');
-    expect(ad.description).toBe('opis test');
     expect(ad.description).toBe('opis test');
 
 })

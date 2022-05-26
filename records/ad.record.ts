@@ -15,6 +15,7 @@ export class AdRecord implements AdEntity {
     public url: string;
     public lat: number;
     public lon: number;
+    public clicksCounter: number;
 
     constructor(obj: NewAdEntity) {
         if(!obj.name || obj.name.length >100){
@@ -39,13 +40,18 @@ export class AdRecord implements AdEntity {
         this.price = obj.price;
         this.lon = obj.lon;
         this.lat = obj.lat;
-
+        this.clicksCounter = obj.clicksCounter;
     }
 
     static async getOne(id: string): Promise<AdRecord | null> {
+
+        await pool.execute('update `ads` set `clicksCounter` = `clicksCounter` + 1 where `id` = :id', {
+            id,
+        });
         const [results] = await pool.execute('select * from `ads` where `id` = :id', {
-                    id,
-                }) as AdRecordResults;
+                id,
+            }) as AdRecordResults;
+
         return results.length === 0 ? null : new AdRecord(results[0])
     }
     // static async listAll(): Promise<AdRecord[]> {
@@ -57,8 +63,8 @@ export class AdRecord implements AdEntity {
         const [results] = await pool.execute('select * from `ads` where `name` like :search', { search: `%${name }%`,}) as AdRecordResults;
 
         return results.map(result => {
-            const {id, lat, lon} = result;
-            return { id, lat, lon };
+            const {id, lat, lon, clicksCounter} = result;
+            return { id, lat, lon, clicksCounter };
         })
     }
     async insert() {
@@ -66,7 +72,9 @@ export class AdRecord implements AdEntity {
             this.id = uuid()
         } else throw new Error('Cannot insert something that is alredy inserted.')
         await pool
-            .execute('insert into `ads` (`id`, `name`, `description`,`price`, `url`, `lat`, `lon`) values (:id, :name, :description, :price, :url, :lat, :lon)', this
+            .execute('insert into `ads` (`id`, `name`, `description`,`price`, `url`, `lat`, `lon`, `clicksCounter`) values (:id, :name, :description, :price, :url, :lat, :lon, :clicksCounter)', this
+
+
             //     {
             //     id: this.id,
             //     name: this.name,
