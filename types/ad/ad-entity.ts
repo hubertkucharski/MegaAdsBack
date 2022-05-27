@@ -5,6 +5,7 @@ export interface SimpleAdEntity {
     id: string;
     lat: number;
     lon: number;
+    clicksCounter: number;
 }
 
 export interface AdEntity extends SimpleAdEntity{
@@ -12,4 +13,5 @@ export interface AdEntity extends SimpleAdEntity{
     description: string;
     price: number;
     url: string;
+    secondUrl?: string;
 }

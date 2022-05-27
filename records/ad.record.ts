@@ -4,7 +4,6 @@ import {pool} from "../utils/db";
 import {FieldPacket} from "mysql2";
 import {v4 as uuid} from "uuid";
 
-
 type AdRecordResults = [AdEntity[], FieldPacket[]];
 
 export class AdRecord implements AdEntity {
@@ -15,6 +14,8 @@ export class AdRecord implements AdEntity {
     public url: string;
     public lat: number;
     public lon: number;
+    public clicksCounter: number;
+    public secondUrl: string;
 
     constructor(obj: NewAdEntity) {
         if(!obj.name || obj.name.length >100){
@@ -26,7 +27,6 @@ export class AdRecord implements AdEntity {
         if(obj.price < 0 || obj.price > 9999999){
             throw new ValidationError('Cena nie może być mniejsza niż zero lub większa niż 9 999 999.');
         }
-        //TODO: Check if URL is valid
         if(!obj.url || obj.url.length >100){
             throw new ValidationError('Adres URL ogłoszenia nie może być pusty, ani przekraczać 100 znaków.');
         }
@@ -40,6 +40,18 @@ export class AdRecord implements AdEntity {
         this.price = obj.price;
         this.lon = obj.lon;
         this.lat = obj.lat;
+        this.clicksCounter = obj.clicksCounter;
+        this.secondUrl = obj.secondUrl;
+    }
+
+    static async getOne(id: string): Promise<AdRecord | null> {
+
+        await pool.execute('update `ads` set `clicksCounter` = `clicksCounter` + 1 where `id` = :id', {
+            id,
+        });
+        const [results] = await pool.execute('select * from `ads` where `id` = :id', {
+                id,
+            }) as AdRecordResults;
 
     }
 
@@ -58,8 +70,8 @@ export class AdRecord implements AdEntity {
         const [results] = await pool.execute('select * from `ads` where `name` like :search', { search: `%${name }%`,}) as AdRecordResults;
 
         return results.map(result => {
-            const {id, lat, lon} = result;
-            return { id, lat, lon };
+            const {id, lat, lon, clicksCounter} = result;
+            return { id, lat, lon, clicksCounter };
         })
     }
     async insert() {
@@ -67,7 +79,8 @@ export class AdRecord implements AdEntity {
             this.id = uuid()
         } else throw new Error('Cannot insert something that is alredy inserted.')
         await pool
-            .execute('insert into `ads` (`id`, `name`, `description`,`price`, `url`, `lat`, `lon`) values (:id, :name, :description, :price, :url, :lat, :lon)', this
+            .execute('insert into `ads` (`id`, `name`, `description`,`price`, `url`, `lat`, `lon`, `secondUrl`) values (:id, :name, :description, :price, :url, :lat, :lon, :secondUrl)', this
+
             //     {
             //     id: this.id,
             //     name: this.name,
