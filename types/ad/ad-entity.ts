@@ -13,4 +13,5 @@ export interface AdEntity extends SimpleAdEntity{
     description: string;
     price: number;
     url: string;
+    secondUrl?: string;
 }

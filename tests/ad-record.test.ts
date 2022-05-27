@@ -9,6 +9,7 @@ const defaultObj = {
     lat: 4,
     lon: 4,
     clicksCounter: 0,
+    secondUrl: '',
 }
 
 test('Can build AdRecord', ()=>{

@@ -16,6 +16,7 @@ export class AdRecord implements AdEntity {
     public lat: number;
     public lon: number;
     public clicksCounter: number;
+    public secondUrl: string;
 
     constructor(obj: NewAdEntity) {
         if(!obj.name || obj.name.length >100){
@@ -41,6 +42,7 @@ export class AdRecord implements AdEntity {
         this.lon = obj.lon;
         this.lat = obj.lat;
         this.clicksCounter = obj.clicksCounter;
+        this.secondUrl = obj.secondUrl;
     }
 
     static async getOne(id: string): Promise<AdRecord | null> {
@@ -72,7 +74,7 @@ export class AdRecord implements AdEntity {
             this.id = uuid()
         } else throw new Error('Cannot insert something that is alredy inserted.')
         await pool
-            .execute('insert into `ads` (`id`, `name`, `description`,`price`, `url`, `lat`, `lon`, `clicksCounter`) values (:id, :name, :description, :price, :url, :lat, :lon, :clicksCounter)', this
+            .execute('insert into `ads` (`id`, `name`, `description`,`price`, `url`, `lat`, `lon`, `secondUrl`) values (:id, :name, :description, :price, :url, :lat, :lon, :secondUrl)', this
 
 
             //     {
