@@ -4,6 +4,7 @@ import {pool} from "../utils/db";
 import {FieldPacket} from "mysql2";
 import {v4 as uuid} from "uuid";
 
+
 type AdRecordResults = [AdEntity[], FieldPacket[]];
 
 export class AdRecord implements AdEntity {
@@ -50,15 +51,9 @@ export class AdRecord implements AdEntity {
             id,
         });
         const [results] = await pool.execute('select * from `ads` where `id` = :id', {
-                id,
-            }) as AdRecordResults;
+            id,
+        }) as AdRecordResults;
 
-    }
-
-    static async getOne(id: string): Promise<AdRecord | null> {
-        const [results] = await pool.execute('select * from `ads` where `id` = :id', {
-                    id,
-                }) as AdRecordResults;
         return results.length === 0 ? null : new AdRecord(results[0])
     }
     // static async listAll(): Promise<AdRecord[]> {
@@ -81,15 +76,16 @@ export class AdRecord implements AdEntity {
         await pool
             .execute('insert into `ads` (`id`, `name`, `description`,`price`, `url`, `lat`, `lon`, `secondUrl`) values (:id, :name, :description, :price, :url, :lat, :lon, :secondUrl)', this
 
-            //     {
-            //     id: this.id,
-            //     name: this.name,
-            //     description: this.description,
-            //     price: this.price,
-            //     url: this.url,
-            //     lat: this.lat,
-            //     lon: this.lon,
-            // }
+
+                //     {
+                //     id: this.id,
+                //     name: this.name,
+                //     description: this.description,
+                //     price: this.price,
+                //     url: this.url,
+                //     lat: this.lat,
+                //     lon: this.lon,
+                // }
             );
         return this.id;
     }
