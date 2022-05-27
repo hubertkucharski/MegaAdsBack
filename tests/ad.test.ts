@@ -8,6 +8,8 @@ const defaultObj = {
     url: 'http://localhost:8080',
     lat: 16.44,
     lon: 33.11,
+    clicksCounter: 0,
+    secondUrl: '',
 }
 
 afterAll(async ()=>{
